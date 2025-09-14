@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para Ti ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle, #000, #300030);
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    h1 {
+      margin-top: 5vh;
+      font-size: 2.5em;
+      text-shadow: 0 0 15px pink;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin: 10px;
+    }
+
+    .btn {
+      margin: 30px 0;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(45deg, #ff0066, #ff66cc);
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 150, 0.7);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 0, 150, 1);
+    }
+
+    .heart {
+      position: fixed;
+      top: -10px;
+      font-size: 24px;
+      color: red;
+      animation: fall 6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    .scene {
+      width: 100%;
+      height: 50vh;
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 5vh;
+    }
+
+    .carousel {
+      width: 300px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate 20s infinite linear;
+      cursor: grab;
+    }
+
+    .carousel img {
+      position: absolute;
+      width: 220px;
+      height: 150px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 0, 150, 0.7);
+      object-fit: cover;
+    }
+
+    @keyframes rotate {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>💗 Te amo 💗</h1>
+  <p>Gracias por estar conmigo lo eres todo para mi 💗</p>
+
+  <!-- Música -->
+  <audio id="bg-music" autoplay loop muted>
+    <source src="music/musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Carrusel -->
+  <div class="scene">
+    <div class="carousel" id="carousel">
+      <img src="IMG/imagen10.jpg.jpeg" style="transform: rotateY(0deg) translateZ(400px);">
+      <img src="IMG/imagen2.jpg" style="transform: rotateY(60deg) translateZ(400px);">
+      <img src="IMG/imagen3.jpg" style="transform: rotateY(120deg) translateZ(400px);">
+      <img src="IMG/imagen3.jpg.jpeg" style="transform: rotateY(180deg) translateZ(400px);">
+      <img src="IMG/imagen5.jpg" style="transform: rotateY(240deg) translateZ(400px);">
+      <img src="IMG/imagen6.jpg" style="transform: rotateY(300deg) translateZ(400px);">
+    </div>
+  </div>
+
+  <!-- Botón a otra página -->
+  <button class="btn" onclick="goToPage2()">✨ 👉🏻 ✨</button>
+
+  <script>
+    // Corazones cayendo
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.fontSize = (20 + Math.random() * 30) + "px";
+      heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(createHeart, 300);
+
+    // Música
+    const audio = document.getElementById("bg-music");
+
+    function enableSound() {
+      audio.muted = false;
+      audio.play();
+      document.removeEventListener("click", enableSound);
+      document.removeEventListener("touchstart", enableSound);
+    }
+    document.addEventListener("click", enableSound);
+    document.addEventListener("touchstart", enableSound);
+
+    // Guardar tiempo de música antes de salir
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("musicTime", audio.currentTime);
+    });
+
+    // Carrusel interactivo
+    const carousel = document.getElementById("carousel");
+    let angle = 0;
+    let startX;
+    let isDragging = false;
+
+    carousel.style.animationPlayState = "running";
+
+    function rotateCarousel(newAngle) {
+      carousel.style.transform = `rotateY(${newAngle}deg)`;
+    }
+
+    carousel.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      carousel.style.animationPlayState = "paused";
+    });
+
+    carousel.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      let deltaX = e.clientX - startX;
+      startX = e.clientX;
+      angle += deltaX * 0.5;
+      rotateCarousel(angle);
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+      carousel.style.animationPlayState = "running";
+    });
+
+    carousel.addEventListener("touchstart", (e) => {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      carousel.style.animationPlayState = "paused";
+    });
+
+    carousel.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      let deltaX = e.touches[0].clientX - startX;
+      startX = e.touches[0].clientX;
+      angle += deltaX * 0.5;
+      rotateCarousel(angle);
+    });
+
+    carousel.addEventListener("touchend", () => {
+      isDragging = false;
+      carousel.style.animationPlayState = "running";
+    });
+
+    // Ir a página 2 guardando tiempo de música
+    function goToPage2() {
+      localStorage.setItem("musicTime", audio.currentTime);
+      window.location.href = "pagina2.html";
+    }
+  </script>
+</body>
+</html>

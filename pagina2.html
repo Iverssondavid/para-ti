@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para ti 💗</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #1a001a, #330033, #000);
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: hidden;
+    }
+    h1 {
+      margin-top: 50px;
+      font-size: 2.5em;
+      text-shadow: 0 0 15px pink;
+      z-index: 1;
+    }
+    .typing {
+      font-size: 1.3em;
+      border-right: 3px solid pink;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 6s steps(50, end) forwards, blink 0.8s infinite;
+      z-index: 1;
+    }
+    @keyframes typing { from { width: 0; } to { width: 80%; } }
+    @keyframes blink { 50% { border-color: transparent; } }
+    .foto-centro {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-top: 40px;
+      animation: beat 1.2s infinite;
+      box-shadow: 0 0 20px rgba(255, 0, 150, 0.7);
+      z-index: 1;
+    }
+    @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+    .falling-heart {
+      position: fixed;
+      top: -10px;
+      font-size: 24px;
+      color: red;
+      animation: fall 6s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+    .btn {
+      margin-top: 50px;
+      padding: 12px 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(45deg, #ff0066, #ff66cc, #ff99ff);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 0, 150, 0.8);
+      transition: all 0.3s ease-in-out;
+      z-index: 1;
+    }
+    .btn:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 0, 150, 1); }
+    .final-text {
+      margin-top: 25px;
+      font-size: 1.1em;
+      font-style: italic;
+      color: #ffb6ff;
+      text-shadow: 0 0 10px rgba(255, 150, 255, 0.7);
+      z-index: 1;
+      animation: fadeIn 4s ease-in-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    audio { display: none; }
+  </style>
+</head>
+<body>
+  <h1>💗 Feliz 7 meses 💗</h1>
+  <p class="typing">Eres mi mundo, te amo mucho💗</p>
+  <img src="IMG/imagen14.jpg" alt="Mi amor" class="foto-centro">
+
+  <button class="btn" onclick="goBack()">⬅️ Volver</button>
+  <p class="final-text">Y recuerda... mi amor por ti nunca tendrá fin 💗</p>
+
+  <!-- 🎶 Música -->
+  <audio id="bg-music" loop>
+    <source src="music/musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+
+    // Recuperar tiempo guardado
+    const savedTime = localStorage.getItem("songTime");
+    if (savedTime) {
+      audio.currentTime = savedTime;
+    }
+
+    // 🔊 Habilitar sonido en primer clic/touch
+    function enableSound() {
+      audio.muted = false;
+      audio.play();
+      document.removeEventListener("click", enableSound);
+      document.removeEventListener("touchstart", enableSound);
+    }
+    document.addEventListener("click", enableSound);
+    document.addEventListener("touchstart", enableSound);
+
+    // Corazones cayendo
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "falling-heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.fontSize = (20 + Math.random() * 30) + "px";
+      heart.style.animationDuration = (3 + Math.random() * 5) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(createHeart, 400);
+
+    // Botón volver
+    function goBack() {
+      localStorage.setItem("songTime", audio.currentTime);
+      location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
